@@ -2,7 +2,26 @@ const { Client, LocalAuth, MessageMedia } = require('whatsapp-web.js');
 const qrcode = require('qrcode-terminal');
 const axios = require('axios');
 const fs = require('fs');
+// ========== CEK PLATFORM TERMUX ==========
+const isTermux = process.env.PREFIX === '/data/data/com.termux/files/usr' || 
+                 process.cwd().includes('/data/data/com.termux');
 
+// ========== KONFIGURASI CHROMIUM UNTUK TERMUX ==========
+let chromiumPath = null;
+if (isTermux) {
+    const chromiumPaths = [
+        '/data/data/com.termux/files/usr/bin/chromium',
+        '/data/data/com.termux/files/usr/bin/chromium-browser',
+        '/data/data/com.termux/files/usr/bin/chromium-browser/chromium'
+    ];
+    for (const path of chromiumPaths) {
+        if (require('fs').existsSync(path)) {
+            chromiumPath = path;
+            break;
+        }
+    }
+    console.log('🔍 TERMUX terdeteksi! Menggunakan Chromium di:', chromiumPath);
+}
 // ========== KONFIGURASI BOT ==========
 const client = new Client({
     authStrategy: new LocalAuth(),
@@ -509,7 +528,11 @@ process.on('SIGINT', async () => {
     await client.destroy();
     process.exit(0);
 });
-
+// ========== KONFIGURASI KHUSUS TERMUX ==========
+if (isTermux && chromiumPath) {
+    console.log('✅ Termux mode aktif!');
+    console.log('⚠️ Pastikan Chromium sudah terinstall: pkg install chromium');
+}
 // JALANKAN BOT
 client.initialize();
 
