@@ -8,22 +8,13 @@ const client = new Client({
     authStrategy: new LocalAuth(),
     puppeteer: { 
         headless: true,
+        executablePath: '/data/data/com.termux/files/usr/bin/chromium',
         args: [
             '--no-sandbox',
             '--disable-setuid-sandbox',
             '--disable-dev-shm-usage',
             '--disable-accelerated-2d-canvas',
-            '--disable-gpu',
-            // TAMBAHKAN INI UNTUK FRAME STABILITY!
-            '--disable-features=IsolateOrigins,site-per-process',
-            '--disable-site-isolation-trials',
-            // MEMORY MANAGEMENT
-            '--js-flags=--max-old-space-size=512',
-            '--renderer-process-limit=2',
-            // PERFORMANCE
-            '--disable-extensions',
-            '--disable-software-rasterizer',
-            '--mute-audio'
+            '--disable-gpu'
         ],
         protocolTimeout: 120000
     }
